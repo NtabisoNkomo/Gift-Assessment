@@ -6,11 +6,11 @@ import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ClipboardList, Calendar, ChevronRight, User as UserIcon, Award, ArrowRight } from 'lucide-react';
+import { ClipboardList, Calendar, ChevronRight, User as UserIcon, Award } from 'lucide-react';
 
 interface AssessmentResult {
   id: string;
-  createdAt: any;
+  createdAt?: { toDate: () => Date };
   topGifts: string; // JSON string array
   userName: string;
 }

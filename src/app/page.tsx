@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/components/AuthProvider';
-import { ArrowRight, Sparkles, LogIn, UserPlus, LayoutDashboard, ShieldCheck } from 'lucide-react';
+import { ArrowRight, LogIn, UserPlus, LayoutDashboard } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Home() {
@@ -31,7 +32,12 @@ export default function Home() {
           className="inline-flex p-4 bg-white/5 dark:bg-white/10 shadow-2xl rounded-[3.5rem] mb-10 border border-white/20 group hover:border-primary-500/50 transition-colors backdrop-blur-md"
         >
            <div className="w-48 h-48 rounded-[3rem] overflow-hidden relative shadow-inner bg-gradient-to-br from-primary-50 to-white dark:from-slate-900 dark:to-slate-800 flex items-center justify-center p-6">
-              <img src="/logo.png" alt="Spiritual Gifts Logo" className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-1000 ease-in-out drop-shadow-xl" />
+             <Image 
+                src="/logo.png" 
+                alt="Spiritual Gifts Logo" 
+                fill
+                className="object-contain group-hover:scale-110 transition-transform duration-1000 ease-in-out drop-shadow-xl" 
+             />
               <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent pointer-events-none" />
            </div>
         </motion.div>

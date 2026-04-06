@@ -1,31 +1,30 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { useAuth } from '@/components/AuthProvider';
 import type { FirestoreResult } from '@/lib/types';
-import { ShieldAlert, Trash2, Mail as MailIcon, MessageSquare } from 'lucide-react';
+import { Trash2, Mail as MailIcon, MessageSquare } from 'lucide-react';
 import ContactModal from '@/components/ContactModal';
 
-// Note: Admin access is now primarily controlled by /admin/login (Username/Password)
-// The UID whitelist below is kept as a legacy/secondary check.
-const ADMIN_UIDS = (process.env.NEXT_PUBLIC_ADMIN_UIDS ?? '')
-  .split(',')
-  .map((uid) => uid.trim())
-  .filter(Boolean);
 
 interface ResultDoc extends FirestoreResult {
   id: string;
 }
 
+interface MessageDoc {
+  id: string;
+  name: string;
+  email: string;
+  subject?: string;
+  message: string;
+  createdAt?: { toDate: () => Date };
+}
+
 export default function AdminDashboard() {
-  const { user, loading: authLoading } = useAuth();
-  const router = useRouter();
   const [results, setResults] = useState<ResultDoc[]>([]);
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<MessageDoc[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Modal State
@@ -49,7 +48,7 @@ export default function AdminDashboard() {
         const querySnapshotMessages = await getDocs(qMessages);
         const docsMessages = querySnapshotMessages.docs.map((docSnap) => ({
           id: docSnap.id,
-          ...docSnap.data(),
+          ...(docSnap.data() as Omit<MessageDoc, 'id'>),
         }));
         setMessages(docsMessages);
       } catch (e) {
@@ -254,7 +253,7 @@ export default function AdminDashboard() {
                         <p className="text-xs text-slate-500 font-medium">{m.email}</p>
                     </div>
                     <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed italic">
-                        "{m.message}"
+                        &quot;{m.message}&quot;
                     </p>
                     <p className="text-[10px] text-slate-400 font-medium">
                         {m.createdAt?.toDate ? m.createdAt.toDate().toLocaleDateString() : 'Just now'}

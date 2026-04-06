@@ -31,7 +31,7 @@ export default function AboutPage() {
           </div>
           <h2 className="text-3xl font-bold">Why We Exist</h2>
           <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
-            We believe that every person is uniquely gifted. However, identifying those gifts can be challenging without the right tools. Our platform provides a scientifically-backed, spiritually-grounded assessment to help you find your "sweet spot" in service.
+            We believe that every person is uniquely gifted. However, identifying those gifts can be challenging without the right tools. Our platform provides a scientifically-backed, spiritually-grounded assessment to help you find your &quot;sweet spot&quot; in service.
           </p>
         </motion.div>
         <motion.div 

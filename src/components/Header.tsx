@@ -5,8 +5,9 @@ import { useAuth } from '@/components/AuthProvider';
 import { auth } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
 import ThemeToggle from './ThemeToggle';
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
-import { LogOut, LayoutDashboard, ClipboardList, ShieldCheck } from 'lucide-react';
+import { LogOut, LayoutDashboard, ClipboardList } from 'lucide-react';
 
 export function Header() {
   const { user, loading } = useAuth();
@@ -40,8 +41,13 @@ export function Header() {
   return (
     <header className="p-4 flex justify-between items-center border-b border-border/50 bg-background/50 backdrop-blur-lg sticky top-0 z-50">
       <Link href="/" className="flex items-center gap-3 group">
-        <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg group-hover:scale-110 transition-transform bg-white/10">
-           <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+        <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg group-hover:scale-110 transition-transform bg-white/10 relative">
+           <Image 
+              src="/logo.png" 
+              alt="Logo" 
+              fill
+              className="object-cover" 
+           />
         </div>
         <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-gold-500 tracking-tight">
           Spiritual Gifts

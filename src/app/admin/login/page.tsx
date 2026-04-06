@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2, Sparkles, ShieldCheck } from 'lucide-react';
+import Image from 'next/image';
+import { Loader2 } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const [username, setUsername] = useState('');
@@ -32,7 +33,7 @@ export default function AdminLoginPage() {
       } else {
         setError(data.error || 'Invalid credentials');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred during login');
     } finally {
       setLoading(false);
@@ -43,8 +44,13 @@ export default function AdminLoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-transparent px-4 py-12 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 glass-panel p-10 rounded-3xl border border-white/20 shadow-2xl backdrop-blur-xl bg-white/30 dark:bg-black/30">
         <div className="text-center space-y-4">
-          <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-[2rem] overflow-hidden shadow-2xl border border-white/20 bg-white/5">
-             <img src="/logo.png" alt="Admin Logo" className="w-full h-full object-cover" />
+          <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-[2rem] overflow-hidden shadow-2xl border border-white/20 bg-white/5 relative">
+             <Image 
+                src="/logo.png" 
+                alt="Admin Logo" 
+                fill
+                className="object-cover" 
+             />
           </div>
           <h2 className="text-3xl font-extrabold tracking-tight text-foreground pt-2">
             Admin Access

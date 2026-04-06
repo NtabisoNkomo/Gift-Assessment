@@ -30,7 +30,7 @@ export function GiftCard({ giftScore, rank }: { giftScore: GiftScore; rank: numb
       </div>
       
       <p className="text-slate-600 dark:text-slate-400 mb-8 min-h-[72px] relative z-10 leading-relaxed font-medium italic">
-        "{gift.description}"
+        &quot;{gift.description}&quot;
       </p>
 
       <div className="space-y-5 pt-6 border-t border-border/40 relative z-10">

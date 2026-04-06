@@ -47,7 +47,7 @@ export default function ContactPage() {
       >
         <h1 className="text-5xl md:text-6xl font-black text-gradient">Get In Touch</h1>
         <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
-          Have questions about the assessment or need technical support? We're here to help.
+          Have questions about the assessment or need technical support? We&apos;re here to help.
         </p>
       </motion.div>
 
