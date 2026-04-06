@@ -13,7 +13,7 @@ export function ActionBar({ shareId }: ActionBarProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopyLink = () => {
-    const url = `${window.location.origin}/results/${shareId}`;
+    const url = `${window.location.origin}/results?id=${shareId}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { FirestoreResult } from '@/lib/types';
+import { useRouter } from 'next/navigation';
 import { Trash2, Mail as MailIcon, MessageSquare } from 'lucide-react';
 import ContactModal from '@/components/ContactModal';
 
@@ -30,6 +31,14 @@ export default function AdminDashboard() {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState({ email: '', name: '' });
+  const router = useRouter();
+
+  useEffect(() => {
+    const isAdmin = document.cookie.includes('admin-session=1');
+    if (!isAdmin) {
+      router.push('/admin/login');
+    }
+  }, [router]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -192,7 +201,7 @@ export default function AdminDashboard() {
                             <MailIcon className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
                         </button>
                         <Link
-                            href={`/results/${r.id}`}
+                            href={`/results?id=${r.id}`}
                             className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-black hover:bg-slate-50 dark:hover:bg-slate-800 transition"
                         >
                             Review

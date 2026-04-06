@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ClipboardList, Calendar, ChevronRight, User as UserIcon, Award } from 'lucide-react';
 
@@ -18,7 +19,7 @@ interface AssessmentResult {
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth();
   const [results, setResults] = useState<AssessmentResult[]>([]);
-  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchResults() {
@@ -37,8 +38,6 @@ export default function DashboardPage() {
         setResults(fetchedResults);
       } catch (err) {
         console.error('Error fetching results:', err);
-      } finally {
-        setLoading(false);
       }
     }
 
@@ -47,15 +46,19 @@ export default function DashboardPage() {
     }
   }, [user, authLoading]);
 
-  if (authLoading || (loading && user)) {
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login?redirect=/dashboard');
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading || !user) {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
         <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
-
-  if (!user) return null; // Should be handled by middleware
 
   return (
     <div className="flex-1 max-w-6xl mx-auto w-full p-4 md:p-8 space-y-8">
@@ -149,7 +152,7 @@ export default function DashboardPage() {
                   transition={{ delay: index * 0.1 }}
                 >
                   <Link 
-                    href={`/results/${result.id}`}
+                    href={`/results?id=${result.id}`}
                     className="flex flex-col md:flex-row md:items-center justify-between p-6 glass-panel rounded-2xl border border-border hover:border-primary-500/50 hover:bg-primary-50/50 dark:hover:bg-primary-900/10 transition-all group shadow-sm hover:shadow-md"
                   >
                     <div className="flex items-center gap-4">

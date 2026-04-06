@@ -86,7 +86,7 @@ export default function AssessmentPage() {
             })
         }).catch(console.error);
 
-        router.push(`/results/${resultId}`);
+        router.push(`/results?id=${resultId}`);
         return;
       } catch (err) {
         console.error('Failed to sync results', err);
