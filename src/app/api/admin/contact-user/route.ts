@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebase-admin';
+import * as admin from 'firebase-admin';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -38,13 +38,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error }, { status: 500 });
     }
 
-    // 2. Store message history in Firestore
-    await addDoc(collection(db, 'sent_messages'), {
+    // 2. Store message history in Firestore using Admin SDK
+    await adminDb.collection('sent_messages').add({
       recipientEmail: email,
       recipientName: name,
       subject: subject,
       message: message,
-      sentAt: serverTimestamp(),
+      sentAt: admin.firestore.FieldValue.serverTimestamp(),
       type: 'admin_to_user'
     });
 
