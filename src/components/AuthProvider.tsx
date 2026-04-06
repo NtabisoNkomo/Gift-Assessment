@@ -18,15 +18,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Safety timeout to ensure loading doesn't hang indefinitely 
+    // if Firebase initialization or auth state change is slow.
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2500);
+
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
       setLoading(false);
+      clearTimeout(timer);
+      
       // Keep the middleware session cookie in sync with Firebase auth state
       if (!firebaseUser) {
         document.cookie = 'auth-session=; path=/; max-age=0';
       }
     });
-    return () => unsubscribe();
+
+    return () => {
+      unsubscribe();
+      clearTimeout(timer);
+    };
   }, []);
 
   return (
