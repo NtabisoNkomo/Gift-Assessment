@@ -150,7 +150,7 @@ function ResultsContent() {
                   <div>
                     <p className="font-semibold text-foreground">Your results are temporary</p>
                     <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                      Create a free account to save your profile, get a shareable link, and download a PDF report.
+                      Create a free account to save your profile and download a PDF report.
                     </p>
                   </div>
                 </div>
@@ -186,17 +186,17 @@ function ResultsContent() {
                   <div>
                     <p className="font-semibold text-foreground">Save to your account</p>
                     <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                      You&apos;re logged in as <strong>{user.displayName || user.email}</strong>. Save results to get a permanent link.
+                      You&apos;re logged in as <strong>{user.displayName || user.email}</strong>. Save results to your profile history.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
-                  <button
+                    <button
                     onClick={handleSaveResults}
                     disabled={saving}
                     className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary-500 to-gold-500 text-white font-semibold rounded-xl hover:scale-105 transition-all shadow-md text-sm disabled:opacity-60"
                   >
-                    {saving ? 'Saving…' : 'Save & Get Link'}
+                    {saving ? 'Saving…' : 'Save to Profile'}
                   </button>
                   <button
                     onClick={() => setBannerDismissed(true)}

@@ -28,10 +28,10 @@ export default function AssessmentPage() {
     return assessmentQuestions.slice(start, start + QUESTIONS_PER_PAGE);
   }, [currentPage]);
 
-  // Reset assessment on load (as requested)
-  useEffect(() => {
-    reset();
-  }, [reset]);
+  // Don't reset assessment on load, allow it to persist from local storage
+  // useEffect(() => {
+  //   reset();
+  // }, [reset]);
 
   const allAnswered = currentQuestions.every(q => answers[q.id] !== undefined);
   const totalAnswered = Object.keys(answers).length;
@@ -39,8 +39,12 @@ export default function AssessmentPage() {
 
   const handleNext = () => {
     if (currentPage < TOTAL_PAGES - 1) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
       setCurrentPage(prev => prev + 1);
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        // Also scroll the main container if body scrolling is restricted
+        document.getElementById('assessment-top')?.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
     }
   };
 
@@ -99,6 +103,7 @@ export default function AssessmentPage() {
 
   return (
     <div className="max-w-4xl mx-auto w-full p-4 md:p-8 flex flex-col min-h-[calc(100vh-80px)] relative">
+      <div id="assessment-top" className="absolute top-0 left-0 h-0 w-0" />
       {/* Header & Progress */}
       <div className="sticky top-0 z-20 bg-background/90 backdrop-blur-md pt-4 pb-6 space-y-4">
         <div className="flex justify-between text-sm font-medium text-slate-500">

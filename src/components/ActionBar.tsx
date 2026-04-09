@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import generatePDF from 'react-to-pdf';
-import { Share2, Download, Check } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface ActionBarProps {
@@ -10,22 +9,18 @@ interface ActionBarProps {
 }
 
 export function ActionBar({ shareId }: ActionBarProps) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopyLink = () => {
-    const url = `${window.location.origin}/results?id=${shareId}`;
-    navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   const handleDownloadPDF = () => {
     const element = document.getElementById('pdf-content');
     if (element) {
-      generatePDF(() => element, {
-        filename: 'spiritual-gifts-profile.pdf',
-        page: { margin: 20 }
-      });
+      try {
+        generatePDF(() => element, {
+          filename: 'spiritual-gifts-profile.pdf',
+          page: { margin: 20 }
+        });
+      } catch (err) {
+        console.error('PDF generation failed:', err);
+        alert('PDF generation failed. If you are on mobile, please try using a desktop browser or print the page.');
+      }
     }
   };
 
@@ -33,21 +28,12 @@ export function ActionBar({ shareId }: ActionBarProps) {
     <motion.div 
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="sticky top-4 z-50 max-w-sm mx-auto mb-8 backdrop-blur-xl bg-white/40 dark:bg-black/40 border border-white/20 dark:border-white/10 shadow-lg rounded-full px-6 py-3 flex gap-4 justify-between items-center transition-all"
+      className="sticky top-4 z-50 max-w-[200px] mx-auto mb-8 backdrop-blur-xl bg-white/60 dark:bg-black/60 border border-white/20 dark:border-white/10 shadow-2xl rounded-full px-6 py-3 flex justify-center items-center transition-all"
     >
-      <button 
-        onClick={handleCopyLink}
-        className="flex items-center gap-2 text-sm font-medium hover:text-primary transition text-foreground"
-      >
-        {copied ? <Check className="w-4 h-4 text-green-500" /> : <Share2 className="w-4 h-4" />}
-        {copied ? 'Copied!' : 'Share Link'}
-      </button>
-
-      <div className="w-px h-6 bg-border"></div>
 
       <button
         onClick={handleDownloadPDF} 
-        className="flex items-center gap-2 text-sm font-medium hover:text-primary transition text-foreground"
+        className="flex items-center gap-2 text-sm font-bold hover:text-primary-600 transition text-foreground"
       >
         <Download className="w-4 h-4" />
         Download PDF

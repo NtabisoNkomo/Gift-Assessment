@@ -25,16 +25,39 @@ export default function DashboardPage() {
     async function fetchResults() {
       if (!user) return;
       try {
+        // Primary query: Ordered by creation date (requires index)
         const q = query(
           collection(db, 'results'),
           where('userId', '==', user.uid),
           orderBy('createdAt', 'desc')
         );
-        const querySnapshot = await getDocs(q);
+        let querySnapshot;
+        try {
+          querySnapshot = await getDocs(q);
+        } catch (queryErr) {
+          console.warn('Ordered query failed (possibly missing index), falling back to unordered query:', queryErr);
+          // Fallback query: Simple filter (doesn't require composite index)
+          const fallbackQ = query(
+            collection(db, 'results'),
+            where('userId', '==', user.uid)
+          );
+          querySnapshot = await getDocs(fallbackQ);
+        }
+
         const fetchedResults: AssessmentResult[] = [];
         querySnapshot.forEach((doc) => {
           fetchedResults.push({ id: doc.id, ...doc.data() } as AssessmentResult);
         });
+        
+        // Manual sort in JS if we hit the fallback
+        if (fetchedResults.length > 0) {
+          fetchedResults.sort((a, b) => {
+            const dateA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
+            const dateB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
+            return dateB - dateA;
+          });
+        }
+
         setResults(fetchedResults);
       } catch (err) {
         console.error('Error fetching results:', err);

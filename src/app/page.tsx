@@ -1,13 +1,22 @@
 'use client';
 
+import { useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
-import { ArrowRight, LogIn, UserPlus, LayoutDashboard } from 'lucide-react';
+import { useAssessmentStore } from '@/store/useAssessmentStore';
+import { ArrowRight, LogIn, UserPlus, LayoutDashboard, History } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Home() {
   const { user, loading } = useAuth();
+  const { answers } = useAssessmentStore();
+  const router = useRouter();
+
+  const unansweredCount = useMemo(() => {
+    return Object.keys(answers).length;
+  }, [answers]);
 
   if (loading) {
     return (
@@ -51,57 +60,100 @@ export default function Home() {
         </p>
       </motion.div>
 
-      {user ? (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="flex flex-col items-center gap-8 w-full max-w-2xl px-4"
-        >
-          <div className="glass-card p-10 w-full relative group premium-shadow">
-            <div className="absolute -top-6 left-1/2 -translate-x-1/2 px-6 py-2 bg-primary-600 text-white text-xs font-black uppercase tracking-widest rounded-full shadow-lg">Welcome Back</div>
-            <h2 className="text-3xl font-bold mb-3 text-foreground">Hello, {user.displayName || 'Friend'}!</h2>
-            <p className="text-slate-500 dark:text-slate-400 mb-10 text-lg">Your spiritual growth continues today.</p>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <Link 
-                href="/dashboard" 
-                className="flex items-center justify-center gap-3 px-8 py-5 bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-black rounded-3xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-xl hover:shadow-2xl border border-border group/btn"
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="flex flex-col items-center gap-8 w-full max-w-4xl px-4"
+      >
+        {unansweredCount > 0 && (
+          <div className="w-full glass-panel p-6 rounded-[2rem] border border-gold-500/40 bg-gold-50/20 dark:bg-gold-900/10 flex flex-col sm:flex-row items-center justify-between gap-6 mb-4 animate-pulse-slow">
+            <div className="flex items-center gap-4 text-left">
+              <div className="p-3 bg-gold-100 dark:bg-gold-900/40 rounded-2xl">
+                <History className="w-6 h-6 text-gold-600 dark:text-gold-400" />
+              </div>
+              <div>
+                <h3 className="font-bold text-xl text-foreground">Pick up where you left off?</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">You have {unansweredCount} answers saved from your last session.</p>
+              </div>
+            </div>
+            <div className="flex gap-4 w-full sm:w-auto">
+              <button 
+                onClick={() => {
+                   if (confirm('Are you sure you want to start over? This will clear your current progress.')) {
+                     useAssessmentStore.getState().reset();
+                     router.push('/assessment');
+                   }
+                }}
+                className="flex-1 sm:flex-none px-6 py-3 rounded-xl border border-border text-slate-500 font-bold hover:bg-white/50 transition-all"
               >
-                <LayoutDashboard className="w-6 h-6 text-primary-500 group-hover/btn:rotate-6 transition-transform" /> Visit Dashboard
-              </Link>
+                Restart
+              </button>
               <Link 
                 href="/assessment" 
-                className="flex items-center justify-center gap-3 px-8 py-5 bg-primary-600 text-white font-black rounded-3xl hover:bg-primary-700 transition-all shadow-xl hover:shadow-primary-500/40 group/btn"
+                className="flex-1 sm:flex-none px-8 py-3 bg-gold-500 text-white font-black rounded-xl hover:bg-gold-600 transition-all shadow-lg"
               >
-                Start Assessment <ArrowRight className="w-6 h-6 group-hover/btn:translate-x-1 transition-transform" />
+                Continue Assessment
               </Link>
             </div>
           </div>
-        </motion.div>
-      ) : (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="flex flex-col sm:flex-row gap-8 justify-center w-full max-w-2xl mx-auto px-4"
-        >
-          <Link 
-            href="/register" 
-            className="flex-1 flex items-center justify-center gap-3 px-10 py-6 text-2xl font-black text-white bg-gradient-to-br from-primary-600 via-primary-500 to-primary-400 rounded-[2.5rem] hover:scale-105 transition-all shadow-2xl premium-shadow group"
-          >
-            <UserPlus className="w-7 h-7 group-hover:rotate-12 transition-transform" />
-            Get Started
-          </Link>
-          <Link 
-            href="/login" 
-            className="flex-1 flex items-center justify-center gap-3 px-10 py-6 text-2xl font-black text-slate-800 dark:text-white glass-panel rounded-[2.5rem] hover:bg-white/40 dark:hover:bg-white/10 transition-all shadow-xl group border border-white/20 dark:border-white/5"
-          >
-            <LogIn className="w-7 h-7 group-hover:translate-x-1 transition-transform" />
-            Login
-          </Link>
-        </motion.div>
-      )}
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+          {user ? (
+            <div className="glass-card p-10 w-full relative group premium-shadow">
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 px-6 py-2 bg-primary-600 text-white text-xs font-black uppercase tracking-widest rounded-full shadow-lg">Welcome Back</div>
+              <h2 className="text-3xl font-bold mb-3 text-foreground">Hello, {user.displayName || 'Friend'}!</h2>
+              <p className="text-slate-500 dark:text-slate-400 mb-10 text-lg">Your spiritual growth continues today.</p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <Link 
+                  href="/dashboard" 
+                  className="flex items-center justify-center gap-3 px-8 py-5 bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-black rounded-3xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-xl hover:shadow-2xl border border-border group/btn"
+                >
+                  <LayoutDashboard className="w-6 h-6 text-primary-500 group-hover/btn:rotate-6 transition-transform" /> Dashboard
+                </Link>
+                <button 
+                  onClick={() => {
+                    if (unansweredCount === 0 || confirm('Start a fresh assessment? Your previous progress will be cleared.')) {
+                      useAssessmentStore.getState().reset();
+                      router.push('/assessment');
+                    }
+                  }}
+                  className="flex items-center justify-center gap-3 px-8 py-5 bg-primary-600 text-white font-black rounded-3xl hover:bg-primary-700 transition-all shadow-xl hover:shadow-primary-500/40 group/btn"
+                >
+                  {unansweredCount > 0 ? 'Start Over' : 'Start Now'} <ArrowRight className="w-6 h-6 group-hover/btn:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="glass-card p-10 w-full relative group premium-shadow md:col-span-2">
+              <h2 className="text-4xl font-extrabold mb-6 text-foreground tracking-tight underline decoration-primary-500/30">Ready to Discover Your Gifts?</h2>
+              <div className="flex flex-col sm:flex-row gap-8 justify-center items-center">
+                <Link 
+                  href="/register" 
+                  className="w-full sm:flex-1 flex items-center justify-center gap-3 px-10 py-6 text-2xl font-black text-white bg-gradient-to-br from-primary-600 via-primary-500 to-primary-400 rounded-[2.5rem] hover:scale-105 transition-all shadow-2xl premium-shadow group"
+                >
+                  <UserPlus className="w-7 h-7 group-hover:rotate-12 transition-transform" />
+                  Get Started
+                </Link>
+                <div className="text-slate-400 font-bold">OR</div>
+                <button 
+                  onClick={() => {
+                    if (unansweredCount === 0 || confirm('Start a fresh assessment? Your previous progress will be cleared.')) {
+                      useAssessmentStore.getState().reset();
+                      router.push('/assessment');
+                    }
+                  }}
+                  className="w-full sm:flex-1 flex items-center justify-center gap-3 px-10 py-6 text-2xl font-black text-slate-800 dark:text-white glass-panel rounded-[2.5rem] hover:bg-white/40 dark:hover:bg-white/10 transition-all shadow-xl group border border-white/20 dark:border-white/5"
+                >
+                   {unansweredCount > 0 ? 'Restart App' : 'Take Now'} <ArrowRight className="w-7 h-7 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </motion.div>
 
       {/* Enhanced Social Proof / Stats */}
       <motion.div 
