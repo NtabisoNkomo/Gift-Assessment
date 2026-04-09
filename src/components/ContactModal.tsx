@@ -36,7 +36,7 @@ export default function ContactModal({ isOpen, onClose, recipientEmail, recipien
       });
 
       if (!res.ok) throw new Error('Failed to send email');
-      
+
       setSent(true);
       setTimeout(() => {
         onClose();
@@ -55,21 +55,21 @@ export default function ContactModal({ isOpen, onClose, recipientEmail, recipien
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           />
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="glass-panel-heavy w-full max-w-xl rounded-[2.5rem] p-8 relative overflow-hidden shadow-2xl border-white/20 dark:border-white/10"
           >
-            <button 
+            <button
               onClick={onClose}
               className="absolute top-6 right-6 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition"
             >
@@ -96,7 +96,7 @@ export default function ContactModal({ isOpen, onClose, recipientEmail, recipien
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-widest text-slate-400">Subject</label>
-                    <input 
+                    <input
                       required
                       type="text"
                       className="w-full px-6 py-4 bg-white/50 dark:bg-black/20 rounded-2xl border border-slate-200 dark:border-slate-800 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/10 outline-none transition"
@@ -107,7 +107,7 @@ export default function ContactModal({ isOpen, onClose, recipientEmail, recipien
 
                   <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-widest text-slate-400">Message</label>
-                    <textarea 
+                    <textarea
                       required
                       rows={6}
                       className="w-full px-6 py-4 bg-white/50 dark:bg-black/20 rounded-3xl border border-slate-200 dark:border-slate-800 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/10 outline-none transition resize-none"
@@ -125,7 +125,7 @@ export default function ContactModal({ isOpen, onClose, recipientEmail, recipien
                   </div>
                 )}
 
-                <button 
+                <button
                   disabled={isSending}
                   className="w-full py-5 bg-primary-600 text-white font-black rounded-3xl flex items-center justify-center gap-3 hover:bg-primary-700 transition-all disabled:opacity-50"
                 >
