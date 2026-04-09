@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import { apiFetch } from '@/lib/api-client';
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -24,9 +25,8 @@ export default function ContactModal({ isOpen, onClose, recipientEmail, recipien
     setError('');
 
     try {
-      const res = await fetch('/api/admin/contact-user', {
+      const res = await apiFetch('/api/admin/contact-user', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: recipientEmail,
           name: recipientName,

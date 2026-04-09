@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
-import { cookies } from 'next/headers';
+import { isAdminAuthenticated } from '@/lib/admin-auth';
 
 export async function POST(req: Request) {
   try {
-    // 1. Verify admin session
-    const cookieStore = cookies();
-    const adminSession = cookieStore.get('admin-session');
+    // 1. Verify admin session and validate IP
+    const authenticated = await isAdminAuthenticated();
 
-    if (!adminSession) {
+    if (!authenticated) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -20,7 +19,6 @@ export async function POST(req: Request) {
     }
 
     // 3. Perform deletion using Admin SDK
-    // This bypasses security rules and ensures consistent deletion
     await adminDb.collection(collectionName).doc(id).delete();
 
     return NextResponse.json({ 

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
+import { getClientIp, signAdminToken } from '@/lib/admin-auth';
 
 export default function AdminLoginPage() {
   const [username, setUsername] = useState('');
@@ -18,23 +19,52 @@ export default function AdminLoginPage() {
     setError('');
 
     try {
-      const response = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
+      // 1. Capture Client IP (Standalone/APK)
+      const ip = await getClientIp();
+      
+      // 2. Local credential check (Standalone mode)
+      // Note: In production, these should be handled securely.
+      const correctUser = process.env.NEXT_PUBLIC_ADMIN_USER || 'admin';
+      const correctPass = process.env.NEXT_PUBLIC_ADMIN_PASS || 'admin123';
 
-      const data = await response.json();
+      if (username === correctUser && password === correctPass) {
+        // 3. Create Session Token (JWT)
+        const token = await signAdminToken({
+          username,
+          ip,
+          role: 'admin'
+        });
 
-      if (data.success) {
-        // Redirect to admin dashboard
+        // 4. Store session for standalone APK
+        localStorage.setItem('admin-session', token);
+        
+        // Also set a standard cookie for browser compatibility
+        document.cookie = `admin-session=${token}; path=/; max-age=86400; SameSite=Lax`;
+
+        // 5. Log Activity directly to Firestore (via app-level SDK)
+        try {
+          const { db } = await import('@/lib/firebase');
+          const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+          await addDoc(collection(db, 'admin_logs'), {
+            username,
+            ip,
+            status: 'success',
+            userAgent: navigator.userAgent,
+            timestamp: serverTimestamp(),
+            action: 'standalone_login'
+          });
+        } catch (logErr) {
+          console.error("Non-critical logging error:", logErr);
+        }
+
         router.push('/admin');
         router.refresh();
       } else {
-        setError(data.error || 'Invalid credentials');
+        setError('Invalid admin credentials');
       }
-    } catch {
-      setError('An error occurred during login');
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('An error occurred during authentication');
     } finally {
       setLoading(false);
     }
