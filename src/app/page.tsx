@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
-import { ArrowRight, LogIn, UserPlus, LayoutDashboard, History } from 'lucide-react';
+import { ArrowRight, UserPlus, LayoutDashboard, History } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Home() {

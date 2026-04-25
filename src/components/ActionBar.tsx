@@ -8,7 +8,7 @@ interface ActionBarProps {
   shareId: string;
 }
 
-export function ActionBar({ shareId }: ActionBarProps) {
+export function ActionBar({ }: ActionBarProps) {
   const handleDownloadPDF = () => {
     const element = document.getElementById('pdf-content');
     if (element) {

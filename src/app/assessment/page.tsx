@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { assessmentQuestions } from '@/data/questions';
@@ -21,7 +21,7 @@ export default function AssessmentPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useAuth();
-  const { answers, setAnswer, reset } = useAssessmentStore();
+  const { answers, setAnswer } = useAssessmentStore();
 
   const currentQuestions = useMemo(() => {
     const start = currentPage * QUESTIONS_PER_PAGE;
