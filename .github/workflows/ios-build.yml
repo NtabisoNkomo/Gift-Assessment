@@ -22,6 +22,8 @@ jobs:
         run: npm ci
 
       - name: Build Next.js app
+        env:
+          NEXT_PUBLIC_IS_EXPORT: true
         run: npm run build
 
       - name: Capacitor Sync
