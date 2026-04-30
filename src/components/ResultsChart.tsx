@@ -14,32 +14,31 @@ export function RadarAnalysis({ data }: { data: GiftScore[] }) {
   }));
 
   return (
-    <div className="w-full h-[400px] md:h-[500px] flex items-center justify-center">
-      <ResponsiveContainer width="100%" height="100%">
-        <RadarChart cx="50%" cy="50%" outerRadius="65%" data={chartData} margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
-          <PolarGrid stroke="currentColor" className="text-slate-200 dark:text-slate-800" />
-          <PolarAngleAxis 
-            dataKey="subject" 
-            tick={{ fill: 'currentColor', fontSize: 10, fontWeight: 600 }}
-            className="text-slate-600 dark:text-slate-400"
-          />
-          <Tooltip 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            formatter={(value: any) => [`${value}%`, 'Match']}
-             contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', background: 'var(--card)', color: 'var(--foreground)', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-          />
-          <Radar 
-            name="Strength" 
-            dataKey="A" 
-            stroke="#0ea5e9" 
-            strokeWidth={3}
-            fill="#0ea5e9" 
-            fillOpacity={0.4} 
-            animationDuration={1000}
-            isAnimationActive={true}
-          />
-        </RadarChart>
-      </ResponsiveContainer>
+    <div className="w-full flex items-center justify-center py-4">
+      {/* Fixed size avoids ResponsiveContainer ResizeObserver issues in PDF */}
+      <RadarChart cx={250} cy={220} outerRadius={150} width={500} height={450} data={chartData} margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
+        <PolarGrid stroke="currentColor" className="text-slate-200 dark:text-slate-800" />
+        <PolarAngleAxis 
+          dataKey="subject" 
+          tick={{ fill: 'currentColor', fontSize: 10, fontWeight: 600 }}
+          className="text-slate-600 dark:text-slate-400"
+        />
+        <Tooltip 
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          formatter={(value: any) => [`${value}%`, 'Match']}
+           contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', background: 'var(--card)', color: 'var(--foreground)', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+        />
+        <Radar 
+          name="Strength" 
+          dataKey="A" 
+          stroke="#0ea5e9" 
+          strokeWidth={3}
+          fill="#0ea5e9" 
+          fillOpacity={0.4} 
+          animationDuration={1000}
+          isAnimationActive={true}
+        />
+      </RadarChart>
     </div>
   );
 }

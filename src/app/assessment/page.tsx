@@ -61,44 +61,62 @@ export default function AssessmentPage() {
         router.push('/register');
         return;
       }
-    } else {
+      // User chose to stay anonymous — log results without PII for admin visibility
       setIsSubmitting(true);
       try {
         const { primaryGifts } = calculateScores(answers);
         const topGiftsStr = JSON.stringify(primaryGifts.map(g => g.gift.name));
-
-        const docRef = await addDoc(collection(db, 'results'), {
-          userId: user.uid,
-          userName: user.displayName || user.email || 'Anonymous',
-          userEmail: user.email,
+        await addDoc(collection(db, 'results'), {
+          userId: 'anonymous',
+          userName: 'Anonymous',
+          userEmail: null,
           answers: JSON.stringify(answers),
           topGifts: topGiftsStr,
           createdAt: serverTimestamp()
         });
-
-        const resultId = docRef.id;
-
-        // Fire email notification
-        fetch('/api/send-results', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              topGifts: primaryGifts.map(g => g.gift.name),
-              shareId: resultId,
-              email: user.email,
-              name: user.displayName || user.email
-            })
-        }).catch(console.error);
-
-        router.push(`/results?id=${resultId}`);
-        return;
       } catch (err) {
-        console.error('Failed to sync results', err);
+        console.error('Failed to log anonymous results', err);
       }
       setIsSubmitting(false);
+      // Still let them see their results locally
+      router.push('/results');
+      return;
     }
-    // If not authenticated, standard anonymous push
-    router.push('/results');
+
+    setIsSubmitting(true);
+    try {
+      const { primaryGifts } = calculateScores(answers);
+      const topGiftsStr = JSON.stringify(primaryGifts.map(g => g.gift.name));
+
+      const docRef = await addDoc(collection(db, 'results'), {
+        userId: user.uid,
+        userName: user.displayName || user.email || 'Anonymous',
+        userEmail: user.email,
+        answers: JSON.stringify(answers),
+        topGifts: topGiftsStr,
+        createdAt: serverTimestamp()
+      });
+
+      const resultId = docRef.id;
+
+      // Fire email notification
+      fetch('/api/send-results', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            topGifts: primaryGifts.map(g => g.gift.name),
+            shareId: resultId,
+            email: user.email,
+            name: user.displayName || user.email
+          })
+      }).catch(console.error);
+
+      router.push(`/results?id=${resultId}`);
+      return;
+    } catch (err) {
+      console.error('Failed to sync results', err);
+    }
+    setIsSubmitting(false);
   };
 
   return (
