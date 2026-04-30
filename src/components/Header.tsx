@@ -32,14 +32,14 @@ export function Header() {
   };
 
   if (loading) return (
-    <header className="p-4 flex justify-between items-center border-b border-border/50 bg-background/50 backdrop-blur-lg sticky top-0 z-50">
+    <header className="p-4 flex justify-between items-center border-b border-border/50 bg-background/50 backdrop-blur-lg sticky top-0 z-50 print:hidden">
       <h1 className="text-xl font-semibold text-primary-600 dark:text-primary-400">Spiritual Gifts</h1>
       <div className="w-20 h-8 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-lg" />
     </header>
   );
 
   return (
-    <header className="p-4 flex justify-between items-center border-b border-border/50 bg-background/50 backdrop-blur-lg sticky top-0 z-50">
+    <header className="p-4 flex justify-between items-center border-b border-border/50 bg-background/50 backdrop-blur-lg sticky top-0 z-50 print:hidden">
       <Link href="/" className="flex items-center gap-3 group">
         <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg group-hover:scale-110 transition-transform bg-white/10 relative">
            <Image 

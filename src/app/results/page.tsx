@@ -133,82 +133,85 @@ function ResultsContent() {
       {isSharedView && <ActionBar shareId={sharedId} />}
       
       <div id="pdf-content" className="max-w-6xl mx-auto w-full p-4 md:p-8 space-y-16 py-12 bg-background">
-        {/* Banner — only shown for in-memory results */}
+        {/* Banner — only shown for in-memory results, hidden when printing */}
         {!isSharedView && (
-          <AnimatePresence>
-            {isAnonymous && !bannerDismissed && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="glass-panel rounded-2xl p-5 border border-gold-400/40 bg-gold-50/60 dark:bg-gold-900/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="p-2 bg-gold-100 dark:bg-gold-900/30 rounded-xl shrink-0">
-                    <BookmarkPlus className="w-6 h-6 text-gold-600 dark:text-gold-400" />
+          <div className="print:hidden">
+            <AnimatePresence>
+              {isAnonymous && !bannerDismissed && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="glass-panel rounded-2xl p-5 border border-gold-400/40 bg-gold-50/60 dark:bg-gold-900/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="p-2 bg-gold-100 dark:bg-gold-900/30 rounded-xl shrink-0">
+                      <BookmarkPlus className="w-6 h-6 text-gold-600 dark:text-gold-400" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">Your results are temporary</p>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                        Create a free account to save your profile and download a PDF report.
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-foreground">Your results are temporary</p>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                      Create a free account to save your profile and download a PDF report.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 shrink-0">
-                  <Link
-                    href="/register"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary-500 to-gold-500 text-white font-semibold rounded-xl hover:scale-105 transition-all shadow-md text-sm"
-                  >
-                    <LogIn className="w-4 h-4" />
-                    Save My Results
-                  </Link>
-                  <button
-                    onClick={() => setBannerDismissed(true)}
-                    className="p-2 text-slate-400 hover:text-foreground transition rounded-lg hover:bg-white/30"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              </motion.div>
-            )}
-
-            {!isAnonymous && !authLoading && user && !bannerDismissed && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="glass-panel rounded-2xl p-5 border border-primary-400/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-xl shrink-0">
-                    <BookmarkPlus className="w-6 h-6 text-primary-600 dark:text-primary-400" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-foreground">Save to your account</p>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                      You&apos;re logged in as <strong>{user.displayName || user.email}</strong>. Save results to your profile history.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 shrink-0">
+                  <div className="flex items-center gap-3 shrink-0">
+                    <Link
+                      href="/register"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary-500 to-gold-500 text-white font-semibold rounded-xl hover:scale-105 transition-all shadow-md text-sm"
+                    >
+                      <LogIn className="w-4 h-4" />
+                      Save My Results
+                    </Link>
                     <button
-                    onClick={handleSaveResults}
-                    disabled={saving}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary-500 to-gold-500 text-white font-semibold rounded-xl hover:scale-105 transition-all shadow-md text-sm disabled:opacity-60"
-                  >
-                    {saving ? 'Saving…' : 'Save to Profile'}
-                  </button>
-                  <button
-                    onClick={() => setBannerDismissed(true)}
-                    className="p-2 text-slate-400 hover:text-foreground transition rounded-lg hover:bg-white/30"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                      onClick={() => setBannerDismissed(true)}
+                      className="p-2 text-slate-400 hover:text-foreground transition rounded-lg hover:bg-white/30"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+
+              {!isAnonymous && !authLoading && user && !bannerDismissed && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="glass-panel rounded-2xl p-5 border border-primary-400/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-xl shrink-0">
+                      <BookmarkPlus className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">Save to your account</p>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                        You&apos;re logged in as <strong>{user.displayName || user.email}</strong>. Save results to your profile history.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                      <button
+                      onClick={handleSaveResults}
+                      disabled={saving}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary-500 to-gold-500 text-white font-semibold rounded-xl hover:scale-105 transition-all shadow-md text-sm disabled:opacity-60"
+                    >
+                      {saving ? 'Saving…' : 'Save to Profile'}
+                    </button>
+                    <button
+                      onClick={() => setBannerDismissed(true)}
+                      className="p-2 text-slate-400 hover:text-foreground transition rounded-lg hover:bg-white/30"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         )}
+
 
         {/* Header section */}
         <div className="text-center max-w-2xl mx-auto space-y-4">
@@ -276,7 +279,7 @@ function ResultsContent() {
           <BarAnalysis data={allScores} />
         </section>
 
-        <div className="text-center pt-8 border-t border-border">
+        <div className="text-center pt-8 border-t border-border print:hidden">
           <p className="text-slate-500 mb-4">Want to discover your own spiritual gifts?</p>
           <Link
             href="/"
